@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Logo from "./Logo";
 import { Button } from "./ui/button";
-import { Wallet } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
@@ -42,10 +42,10 @@ const Navigation = () => {
               Gallery
             </Link>
             
-            <Button variant="default" size="sm" className="gap-2">
-              <Wallet className="w-4 h-4" />
-              Connect Wallet
-            </Button>
+            <ConnectButton 
+              chainStatus="icon"
+              showBalance={false}
+            />
           </div>
         </div>
       </div>

@@ -168,6 +168,15 @@ All colors MUST be HSL.
     transform: translateY(-4px);
     box-shadow: var(--shadow-glow);
   }
+
+  /* Custom RainbowKit button styles */
+  [data-rk] button {
+    font-family: inherit !important;
+  }
+
+  [data-rk] .iekbcc0 {
+    box-shadow: none !important;
+  }
 }
 
 @layer utilities {

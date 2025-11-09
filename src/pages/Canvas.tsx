@@ -1,12 +1,15 @@
 import { useRef, useState, useEffect } from "react";
+import { useAccount } from 'wagmi';
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import WalletStatus from "@/components/WalletStatus";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Lock, Eraser, Download, Palette } from "lucide-react";
 import { toast } from "sonner";
 
 const Canvas = () => {
+  const { isConnected } = useAccount();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEncrypted, setIsEncrypted] = useState(false);
@@ -59,6 +62,10 @@ const Canvas = () => {
   };
 
   const toggleEncrypt = () => {
+    if (!isConnected) {
+      toast.error("Please connect your wallet first");
+      return;
+    }
     setIsEncrypted(!isEncrypted);
     if (!isEncrypted) {
       toast.success("Artwork encrypted! 🔒");
@@ -84,9 +91,12 @@ const Canvas = () => {
       
       <main className="flex-1 pt-24 pb-32 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold mb-2">Create Your Masterpiece</h1>
-            <p className="text-muted-foreground">Draw freely on the digital canvas</p>
+          <div className="mb-8 space-y-4">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold mb-2">Create Your Masterpiece</h1>
+              <p className="text-muted-foreground">Draw freely on the digital canvas</p>
+            </div>
+            <WalletStatus />
           </div>
 
           {/* Tools */}
@@ -99,7 +109,7 @@ const Canvas = () => {
                   value={brushColor}
                   onChange={(e) => setBrushColor(e.target.value)}
                   className="w-12 h-10 rounded cursor-pointer border border-border"
-                  disabled={isEncrypted}
+                  disabled={isEncrypted || !isConnected}
                 />
               </div>
 
@@ -112,7 +122,7 @@ const Canvas = () => {
                   max={20}
                   step={1}
                   className="flex-1"
-                  disabled={isEncrypted}
+                  disabled={isEncrypted || !isConnected}
                 />
                 <span className="text-sm font-medium w-8">{brushSize}px</span>
               </div>
@@ -122,7 +132,7 @@ const Canvas = () => {
                   variant="outline"
                   size="sm"
                   onClick={clearCanvas}
-                  disabled={isEncrypted}
+                  disabled={isEncrypted || !isConnected}
                   className="gap-2"
                 >
                   <Eraser className="w-4 h-4" />
