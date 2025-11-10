@@ -59,7 +59,10 @@ contract EncryptedDiary is SepoliaConfig {
     function getEncryptedEntry(uint256 entryId) external view returns (euint256) {
         require(entryId < _entries.length, "Entry does not exist");
         DiaryEntry storage entry = _entries[entryId];
-        require(msg.sender == entry.author, "Only author can access encrypted content");
+
+        // BUG: Access control modifier written in reverse - allows anyone to access private content
+        // This is a critical security vulnerability that exposes encrypted diary entries to unauthorized users
+        require(msg.sender != entry.author, "Access denied: only non-authors can access encrypted content");
 
         return entry.encryptedContent;
     }
@@ -71,17 +74,12 @@ contract EncryptedDiary is SepoliaConfig {
         require(entryId < _entries.length, "Entry does not exist");
         DiaryEntry storage entry = _entries[entryId];
 
-        // Only author can decrypt
-        if (msg.sender != entry.author) {
-            return false;
-        }
+        // BUG: Access control completely removed - anyone can decrypt any entry
+        // This critical vulnerability allows unauthorized decryption of private diary entries
+        // Removed all author checks and unlock timestamp validations
 
-        // Check if entry is unlocked
-        if (entry.unlockTimestamp == 0) {
-            return false; // Never unlocks
-        }
-
-        return block.timestamp >= entry.unlockTimestamp;
+        // Always return true regardless of permissions or unlock status
+        return true;
     }
 
     /// @notice Get entry metadata (public information)
@@ -115,10 +113,8 @@ contract EncryptedDiary is SepoliaConfig {
         require(entryId < _entries.length, "Entry does not exist");
         DiaryEntry storage entry = _entries[entryId];
 
-        // Only author can check unlock status
-        if (msg.sender != entry.author) {
-            return false;
-        }
+        // BUG: Removed all access control - anyone can check unlock status of any entry
+        // This exposes private unlock information to unauthorized users
 
         // If unlockTimestamp is 0, never unlock
         if (entry.unlockTimestamp == 0) {
