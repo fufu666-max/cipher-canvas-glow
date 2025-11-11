@@ -48,6 +48,9 @@ const WriteDiary = () => {
       return;
     }
 
+    // BUG: Missing length validation on submit - allows truncated content to be saved
+    // No warning about potential data loss from silent truncation
+
     setIsSubmitting(true);
 
     try {
@@ -151,7 +154,16 @@ const WriteDiary = () => {
               id="content"
               placeholder="Write your diary entry here..."
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => {
+                // BUG: Missing content length validation - silently truncates input over 500 chars
+                // This causes data loss without user notification
+                const newContent = e.target.value;
+                if (newContent.length > 500) {
+                  setContent(newContent.substring(0, 500));
+                } else {
+                  setContent(newContent);
+                }
+              }}
               rows={8}
               className="resize-none"
             />
