@@ -78,8 +78,12 @@ contract EncryptedDiary is SepoliaConfig {
         // This critical vulnerability allows unauthorized decryption of private diary entries
         // Removed all author checks and unlock timestamp validations
 
-        // Always return true regardless of permissions or unlock status
-        return true;
+        // BUG: Time comparison logic error - entry unlocks BEFORE the unlock timestamp
+        // This causes premature unlocking of diary entries, leaking private content
+        if (entry.unlockTimestamp == 0) {
+            return false; // Never unlocks
+        }
+        return block.timestamp <= entry.unlockTimestamp; // BUG: Should be >= but is <=
     }
 
     /// @notice Get entry metadata (public information)
@@ -116,12 +120,13 @@ contract EncryptedDiary is SepoliaConfig {
         // BUG: Removed all access control - anyone can check unlock status of any entry
         // This exposes private unlock information to unauthorized users
 
-        // If unlockTimestamp is 0, never unlock
+        // BUG: Time comparison logic error - same as canDecryptEntry
+        // Entry appears unlocked before the actual unlock timestamp
         if (entry.unlockTimestamp == 0) {
             return false;
         }
 
-        return block.timestamp >= entry.unlockTimestamp;
+        return block.timestamp <= entry.unlockTimestamp; // BUG: Should be >= but is <=
     }
 
     /// @notice Get total number of entries
