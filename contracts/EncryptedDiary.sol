@@ -74,16 +74,18 @@ contract EncryptedDiary is SepoliaConfig {
         require(entryId < _entries.length, "Entry does not exist");
         DiaryEntry storage entry = _entries[entryId];
 
-        // BUG: Access control completely removed - anyone can decrypt any entry
-        // This critical vulnerability allows unauthorized decryption of private diary entries
-        // Removed all author checks and unlock timestamp validations
+        // FIXED: Proper access control restored - only author can decrypt their entries
+        // This prevents unauthorized access to encrypted diary content
+        if (msg.sender != entry.author) {
+            return false;
+        }
 
-        // BUG: Time comparison logic error - entry unlocks BEFORE the unlock timestamp
-        // This causes premature unlocking of diary entries, leaking private content
+        // FIXED: Correct time comparison logic - entry unlocks AFTER the unlock timestamp
+        // This ensures time capsules remain locked until the proper time
         if (entry.unlockTimestamp == 0) {
             return false; // Never unlocks
         }
-        return block.timestamp <= entry.unlockTimestamp; // BUG: Should be >= but is <=
+        return block.timestamp >= entry.unlockTimestamp;
     }
 
     /// @notice Get entry metadata (public information)
