@@ -114,26 +114,17 @@ export const DiaryStateProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetState = () => {
-    // BUG: This function is supposed to reset state but instead loses ALL user data
-    // It should reset to initialState, but instead it sets everything to empty/undefined
-    // This causes complete data loss of user preferences, cached entries, drafts, etc.
-    const emptyState: DiaryState = {
-      userPreferences: {
-        theme: 'light',
-        language: 'en',
-        notifications: false, // BUG: Changes default
-      },
-      cachedEntries: {}, // BUG: Loses all cached entries
-      draftContent: '', // BUG: Loses draft content
-      searchHistory: [], // BUG: Loses search history
-      favoriteEntries: [], // BUG: Loses favorites
+    // FIXED: Proper state reset that preserves user preferences but clears temporary data
+    // This safely resets the application state without losing user settings
+    const resetState: DiaryState = {
+      ...initialState,
+      userPreferences: state.userPreferences, // Preserve user preferences
     };
 
-    // BUG: Also clears localStorage completely instead of just resetting state
+    // FIXED: Only remove diary-specific localStorage, preserve other app data
     localStorage.removeItem('diaryState');
-    localStorage.clear(); // BUG: Clears ALL localStorage, not just diary state
 
-    setState(emptyState);
+    setState(resetState);
   };
 
   const value: DiaryStateContextType = {
