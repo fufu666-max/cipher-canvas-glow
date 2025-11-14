@@ -60,9 +60,9 @@ contract EncryptedDiary is SepoliaConfig {
         require(entryId < _entries.length, "Entry does not exist");
         DiaryEntry storage entry = _entries[entryId];
 
-        // BUG: Access control modifier written in reverse - allows anyone to access private content
-        // This is a critical security vulnerability that exposes encrypted diary entries to unauthorized users
-        require(msg.sender != entry.author, "Access denied: only non-authors can access encrypted content");
+        // FIXED: Proper access control - only the author can access their encrypted content
+        // This ensures privacy and prevents unauthorized access to diary entries
+        require(msg.sender == entry.author, "Access denied: only the author can access encrypted content");
 
         return entry.encryptedContent;
     }
