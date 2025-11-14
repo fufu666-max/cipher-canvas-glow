@@ -7,6 +7,7 @@ import { WagmiProvider } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { config } from './lib/wagmi';
 import '@rainbow-me/rainbowkit/styles.css';
+import { DiaryStateProvider } from './hooks/useDiaryState';
 import Home from "./pages/Home";
 import WriteDiary from "./pages/WriteDiary";
 import DiaryEntries from "./pages/DiaryEntries";
@@ -18,19 +19,21 @@ const App = () => (
   <WagmiProvider config={config}>
     <QueryClientProvider client={queryClient}>
       <RainbowKitProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/write" element={<WriteDiary />} />
-              <Route path="/entries" element={<DiaryEntries />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <DiaryStateProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/write" element={<WriteDiary />} />
+                <Route path="/entries" element={<DiaryEntries />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </DiaryStateProvider>
       </RainbowKitProvider>
     </QueryClientProvider>
   </WagmiProvider>
