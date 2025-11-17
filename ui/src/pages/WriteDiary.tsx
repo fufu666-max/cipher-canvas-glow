@@ -48,8 +48,15 @@ const WriteDiary = () => {
       return;
     }
 
-    // BUG: Missing length validation on submit - allows truncated content to be saved
-    // No warning about potential data loss from silent truncation
+    // FIXED: Added length validation on submit to prevent saving invalid content
+    if (content.length > 1000) {
+      toast({
+        title: "Content too long",
+        description: "Please shorten your diary entry to 1000 characters or less.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -155,18 +162,26 @@ const WriteDiary = () => {
               placeholder="Write your diary entry here..."
               value={content}
               onChange={(e) => {
-                // BUG: Missing content length validation - silently truncates input over 500 chars
-                // This causes data loss without user notification
+                // FIXED: Proper content length validation with user feedback
+                // Prevents data loss by warning users before truncation
                 const newContent = e.target.value;
-                if (newContent.length > 500) {
-                  setContent(newContent.substring(0, 500));
-                } else {
+                if (newContent.length <= 1000) { // Reasonable limit for diary entries
                   setContent(newContent);
+                } else {
+                  toast({
+                    title: "Content too long",
+                    description: "Diary entries are limited to 1000 characters. Please shorten your entry.",
+                    variant: "destructive",
+                  });
+                  // Don't update content to prevent data loss
                 }
               }}
               rows={8}
               className="resize-none"
             />
+            <p className="text-sm text-muted-foreground text-right">
+              {content.length}/1000 characters
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
