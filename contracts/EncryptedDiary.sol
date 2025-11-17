@@ -119,16 +119,19 @@ contract EncryptedDiary is SepoliaConfig {
         require(entryId < _entries.length, "Entry does not exist");
         DiaryEntry storage entry = _entries[entryId];
 
-        // BUG: Removed all access control - anyone can check unlock status of any entry
-        // This exposes private unlock information to unauthorized users
+        // FIXED: Restored access control - only entry author can check unlock status
+        // This prevents unauthorized access to private unlock information
+        if (msg.sender != entry.author) {
+            return false;
+        }
 
-        // BUG: Time comparison logic error - same as canDecryptEntry
-        // Entry appears unlocked before the actual unlock timestamp
+        // FIXED: Correct time comparison logic - entry unlocks at the proper timestamp
+        // This ensures unlock status is only revealed when appropriate
         if (entry.unlockTimestamp == 0) {
             return false;
         }
 
-        return block.timestamp <= entry.unlockTimestamp; // BUG: Should be >= but is <=
+        return block.timestamp >= entry.unlockTimestamp;
     }
 
     /// @notice Get total number of entries
