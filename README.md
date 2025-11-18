@@ -444,6 +444,284 @@ This project is licensed under the BSD-3-Clause-Clear License - see the [LICENSE
 - [RainbowKit](https://www.rainbowkit.com/) for wallet integration
 - [Viem](https://viem.sh/) and [Wagmi](https://wagmi.sh/) for Ethereum integration
 
+## 🔒 Security Considerations
+
+### Privacy & Encryption
+
+Cipher Canvas Glow takes privacy seriously. Your diary entries are encrypted using state-of-the-art Fully Homomorphic Encryption (FHE) technology:
+
+- **Client-Side Encryption**: All encryption happens in your browser before data reaches the blockchain
+- **Zero-Knowledge Design**: Even the application developers cannot read your encrypted content
+- **Author-Only Access**: Only you can decrypt and read your own diary entries
+- **Time-Based Security**: Entries remain locked until their designated unlock time
+
+### Smart Contract Security
+
+The EncryptedDiary contract has been designed with security best practices:
+
+- **Access Control**: Strict permission checks prevent unauthorized access
+- **Input Validation**: All inputs are validated to prevent malicious data
+- **Gas Optimization**: Efficient code to minimize transaction costs
+- **Upgradeability**: Future-proof design for potential enhancements
+
+### Wallet Security
+
+- Always use hardware wallets for maximum security
+- Verify contract addresses before interacting
+- Keep your wallet software updated
+- Use strong passwords and enable 2FA where available
+
+## 🚨 Common Issues & Solutions
+
+### Connection Issues
+
+**Problem**: "Wallet connection failed"
+```
+Solution:
+1. Ensure your wallet extension is installed and unlocked
+2. Check that you're connected to the correct network
+3. Refresh the page and try connecting again
+4. Clear browser cache if issues persist
+```
+
+**Problem**: "Network not supported"
+```
+Solution:
+- For local development: Ensure Hardhat node is running
+- For Sepolia: Switch to Sepolia testnet in your wallet
+- Check network configuration in wallet settings
+```
+
+### Encryption Issues
+
+**Problem**: "Encryption failed"
+```
+Solution:
+1. Ensure FHEVM SDK is properly loaded
+2. Check browser compatibility (Chrome recommended)
+3. Disable ad blockers temporarily
+4. Try refreshing the page
+```
+
+**Problem**: "Cannot decrypt entry"
+```
+Solution:
+- Only entry authors can decrypt their entries
+- Check if the unlock time has passed
+- Ensure you're using the same wallet that created the entry
+- Verify network connection
+```
+
+### Content Issues
+
+**Problem**: "Entry not saving"
+```
+Solution:
+1. Check wallet connection and gas fees
+2. Ensure content is not empty
+3. Verify character limit (1000 characters max)
+4. Check network congestion
+```
+
+**Problem**: "Entry disappeared"
+```
+Solution:
+- Check transaction status on blockchain explorer
+- Ensure you have sufficient funds for gas
+- Try creating the entry again
+- Contact support if issue persists
+```
+
+## 🤝 Contributing
+
+We welcome contributions to Cipher Canvas Glow! Here's how you can help:
+
+### Development Setup
+
+1. **Fork the repository**
+```bash
+git clone https://github.com/your-username/cipher-canvas-glow.git
+cd cipher-canvas-glow
+```
+
+2. **Install dependencies**
+```bash
+npm install
+cd ui && npm install
+```
+
+3. **Start development environment**
+```bash
+# Terminal 1: Start Hardhat node
+npm run node
+
+# Terminal 2: Deploy contracts
+npm run deploy
+
+# Terminal 3: Start UI
+cd ui && npm run dev
+```
+
+### Contribution Guidelines
+
+- **Code Style**: Follow existing code style and conventions
+- **Testing**: Add tests for new features
+- **Documentation**: Update documentation for changes
+- **Security**: Be mindful of security implications
+- **Commits**: Use clear, descriptive commit messages
+
+### Types of Contributions
+
+- 🐛 **Bug fixes**
+- ✨ **New features**
+- 📚 **Documentation improvements**
+- 🧪 **Testing enhancements**
+- 🎨 **UI/UX improvements**
+
+### Pull Request Process
+
+1. Create a feature branch from `main`
+2. Make your changes with clear commit messages
+3. Add tests if applicable
+4. Update documentation
+5. Submit a pull request with description
+6. Wait for review and address feedback
+
+## 📄 License
+
+This project is licensed under the BSD-3-Clause-Clear License.
+
+### BSD-3-Clause-Clear License Summary
+
+This license allows you to:
+
+- ✅ Use the software for commercial purposes
+- ✅ Modify the software
+- ✅ Distribute the software
+- ✅ Use privately without disclosing source
+- ✅ Have unlimited users
+
+You must:
+
+- 📝 Include copyright notice in distributions
+- 📝 Include license text in distributions
+- ⚖️ Give appropriate credit
+
+For full license text, see [LICENSE](LICENSE) file.
+
+## 📊 Changelog
+
+### Version 1.0.0 (Latest)
+
+**Features:**
+- Initial release with FHEVM integration
+- Wallet connection via RainbowKit
+- Encrypted diary entry creation
+- Time-based entry unlocking
+- Modern React UI with Tailwind CSS
+
+**Security:**
+- Comprehensive access control implementation
+- Client-side encryption
+- Privacy-preserving design
+
+**Improvements:**
+- Enhanced wallet connection management
+- Better error handling and user feedback
+- Optimized gas usage
+- Improved mobile responsiveness
+
+### Upcoming Features
+
+- 📱 **Mobile App**: Native mobile applications
+- 🌐 **Multi-Network**: Support for additional blockchain networks
+- 🔄 **Entry Editing**: Ability to edit existing entries
+- 📤 **Export**: Data export functionality
+- 🔍 **Search**: Advanced search and filtering
+- 🏷️ **Tags**: Entry categorization with tags
+- 📊 **Analytics**: Usage statistics and insights
+
+## 📞 Contact & Support
+
+### Getting Help
+
+- 📧 **Email**: support@ciphercanvasglow.com
+- 💬 **Discord**: [Join our community](https://discord.gg/cipher-canvas-glow)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/GladysBentham/cipher-canvas-glow/issues)
+- 📖 **Documentation**: [Full Docs](https://docs.ciphercanvasglow.com)
+
+### Community
+
+- 🌟 **GitHub**: [Star us on GitHub](https://github.com/GladysBentham/cipher-canvas-glow)
+- 🐦 **Twitter**: [@CipherCanvasGlow](https://twitter.com/CipherCanvasGlow)
+- 📺 **YouTube**: [Tutorial Videos](https://youtube.com/@CipherCanvasGlow)
+
+### Business Inquiries
+
+For partnerships, integrations, or business opportunities:
+- 📧 **Business**: business@ciphercanvasglow.com
+- 🌐 **Website**: [ciphercanvasglow.com](https://ciphercanvasglow.com)
+
+## 🔧 Advanced Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+# Wallet Configuration
+PRIVATE_KEY=your_private_key_here
+INFURA_API_KEY=your_infura_key_here
+
+# FHEVM Configuration
+FHEVM_NETWORK=sepolia
+FHEVM_SDK_VERSION=latest
+
+# UI Configuration
+VITE_APP_TITLE=Cipher Canvas Glow
+VITE_APP_ENV=development
+```
+
+### Custom Network Deployment
+
+To deploy on a custom network:
+
+1. Update `hardhat.config.ts` with network configuration
+2. Modify contract constructor parameters if needed
+3. Deploy using `npx hardhat deploy --network your-network`
+4. Update frontend contract addresses
+5. Test thoroughly on testnet first
+
+### Performance Optimization
+
+- Use IPFS for large content storage
+- Implement pagination for entry lists
+- Cache encrypted content locally
+- Optimize FHE operations
+- Use CDN for static assets
+
+## 🎯 Roadmap
+
+### Q1 2025
+- Mobile application launch
+- Advanced search functionality
+- Entry export/import features
+
+### Q2 2025
+- Multi-language support
+- Advanced privacy settings
+- Integration with DeFi protocols
+
+### Q3 2025
+- API for third-party integrations
+- Plugin system for extensions
+- Enterprise features
+
+### Q4 2025
+- Cross-chain compatibility
+- Advanced encryption options
+- Community governance features
+
 ---
 
-**Built with ❤️ using FHEVM**
+**Built with ❤️ using FHEVM by the Cipher Canvas Glow Team**
