@@ -33,6 +33,18 @@ contract EncryptedDiary is SepoliaConfig {
         uint256 unlockTimestamp,
         bool isPublic
     ) external returns (uint256) {
+        // Enhanced input validation for better security
+        require(inputProof.length > 0, "Input proof cannot be empty");
+        require(inputProof.length <= 4096, "Input proof too large");
+
+        // Validate unlock timestamp (must be in future or 0 for never unlock)
+        require(unlockTimestamp == 0 || unlockTimestamp > block.timestamp,
+                "Unlock timestamp must be in the future or 0 for never unlock");
+
+        // Limit reasonable future unlock time (max 10 years)
+        require(unlockTimestamp == 0 || unlockTimestamp <= block.timestamp + 3650 days,
+                "Unlock timestamp cannot be more than 10 years in the future");
+
         euint256 content = FHE.fromExternal(encryptedContent, inputProof);
 
         uint256 entryId = _entries.length;
