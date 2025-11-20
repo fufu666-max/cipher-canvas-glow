@@ -22,6 +22,11 @@ let isSDKInitialized = false;
 let isMockInstance = false;
 let lastChainId: number | null = null; // Track the chainId used to create fhevmInstance
 
+// Performance optimization: Cache initialization promises to avoid duplicate work
+const initializationCache = new Map<number, Promise<FhevmInstance>>();
+const instanceCache = new Map<number, { instance: FhevmInstance; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+
 /**
  * Initialize FHEVM instance
  * Local network (31337): Uses @fhevm/mock-utils + Hardhat plugin
@@ -46,6 +51,19 @@ export async function initializeFHEVM(chainId?: number): Promise<FhevmInstance> 
   }
 
   console.log('[FHEVM] Current chain ID:', currentChainId);
+
+  // Performance optimization: Check cache first
+  const cached = instanceCache.get(currentChainId);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+    console.log('[FHEVM] Using cached FHEVM instance');
+    return cached.instance;
+  }
+
+  // Avoid duplicate initialization for the same chainId
+  if (initializationCache.has(currentChainId)) {
+    console.log('[FHEVM] Initialization already in progress, waiting...');
+    return initializationCache.get(currentChainId)!;
+  }
 
   // If fhevmInstance exists but chainId changed, reset it
   if (fhevmInstance && lastChainId !== null && lastChainId !== currentChainId) {
@@ -94,6 +112,12 @@ export async function initializeFHEVM(chainId?: number): Promise<FhevmInstance> 
           fhevmInstance = mockInstance;
           isMockInstance = true;
           lastChainId = currentChainId;
+
+          // Cache the instance
+          instanceCache.set(currentChainId, { instance: fhevmInstance, timestamp: Date.now() });
+          // Clean up initialization cache
+          initializationCache.delete(currentChainId);
+
           console.log('[FHEVM] ✅ Mock FHEVM instance created successfully');
           return fhevmInstance;
         } else {
@@ -165,6 +189,12 @@ export async function initializeFHEVM(chainId?: number): Promise<FhevmInstance> 
         fhevmInstance = await createInstance(config);
         isMockInstance = false;
         lastChainId = currentChainId;
+
+        // Cache the instance
+        instanceCache.set(currentChainId, { instance: fhevmInstance, timestamp: Date.now() });
+        // Clean up initialization cache
+        initializationCache.delete(currentChainId);
+
         console.log('[FHEVM] ✅ FHEVM instance created successfully');
         return fhevmInstance;
       } catch (error: any) {
