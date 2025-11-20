@@ -7,7 +7,7 @@ A privacy-preserving diary application using **FHEVM (Fully Homomorphic Encrypti
 ## 🎬 Live Demo & Video
 
 - **🌐 Live Demo**: [https://cipher-canvas-glow-1.vercel.app/](https://cipher-canvas-glow-1.vercel.app/)
-- **📹 Demo Video**: [Watch on GitHub](https://github.com/GladysBentham/cipher-canvas-glow/blob/main/cipher-canvas-glow.mp4)
+- **📹 Demo Video**: [Watch on GitHub](https://github.com/GladysBentham/cipher-canvas-glow/blob/main/cipher-canvas-glow.mp4) *(Updated: Shows full encryption/decryption workflow with wallet integration)*
 
 ## ✨ Features
 
