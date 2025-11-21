@@ -5,15 +5,28 @@ import {FHE, euint32, euint256, externalEuint32, externalEuint256} from "@fhevm/
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title Encrypted Diary Contract
-/// @author Cipher Canvas Glow
-/// @notice A privacy-preserving diary application using FHEVM for encrypted entries
+/// @author Cipher Canvas Glow Team
+/// @notice A privacy-preserving diary application using Fully Homomorphic Encryption (FHEVM)
+/// @dev This contract enables users to create encrypted diary entries with time-based unlock mechanisms
+/// Security features:
+/// - Client-side encryption using FHEVM
+/// - Author-only access control for encrypted content
+/// - Time-based entry unlocking
+/// - Comprehensive input validation
+/// @custom:security-contact security@ciphercanvasglow.com
 contract EncryptedDiary is SepoliaConfig {
+    /// @dev Structure representing a single diary entry
+    /// @param author The Ethereum address of the entry creator
+    /// @param encryptedContent FHE-encrypted content using euint256
+    /// @param unlockTimestamp Unix timestamp when entry unlocks (0 = never unlocks)
+    /// @param createdAt Unix timestamp when entry was created
+    /// @param isPublic Whether entry becomes publicly readable after unlock
     struct DiaryEntry {
         address author;
-        euint256 encryptedContent;  // Encrypted diary content
+        euint256 encryptedContent;  // FHE-encrypted diary content
         uint256 unlockTimestamp;    // When the entry can be unlocked (0 = never)
         uint256 createdAt;
-        bool isPublic;             // Whether the entry is publicly readable after unlock
+        bool isPublic;             // Whether entry is publicly readable after unlock
     }
 
     DiaryEntry[] private _entries;
