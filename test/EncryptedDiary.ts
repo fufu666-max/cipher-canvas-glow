@@ -23,9 +23,18 @@ describe("EncryptedDiary", function () {
   let encryptedDiaryContract: EncryptedDiary;
   let encryptedDiaryContractAddress: string;
 
+  // Set longer timeout for FHEVM operations
+  this.timeout(120000);
+
   before(async function () {
     const ethSigners: HardhatEthersSigner[] = await ethers.getSigners();
     signers = { deployer: ethSigners[0], alice: ethSigners[1], bob: ethSigners[2] };
+  });
+
+  beforeEach(async function () {
+    const fixture = await deployFixture();
+    encryptedDiaryContract = fixture.encryptedDiaryContract;
+    encryptedDiaryContractAddress = fixture.encryptedDiaryContractAddress;
   });
 
   beforeEach(async function () {
