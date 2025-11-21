@@ -36,7 +36,10 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Alias for types directory - resolves to project root/types
+      "../../types": path.resolve(__dirname, "../types"),
     },
+    dedupe: ['ethers'],
     // Handle keccak module export issues
     conditions: ["import", "module", "browser", "default"],
   },
@@ -44,7 +47,25 @@ export default defineConfig(({ mode }) => ({
     global: "globalThis",
     "process.env": {},
   },
+  build: {
+    commonjsOptions: {
+      include: [/types/, /node_modules/],
+      transformMixedEsModules: true,
+      requireReturnsDefault: 'auto',
+    },
+    rollupOptions: {
+      // Ensure ethers is not externalized
+      external: (id) => {
+        // Don't externalize ethers or any types directory imports
+        if (id === 'ethers' || id.startsWith('ethers/')) {
+          return false;
+        }
+        return false;
+      },
+    },
+  },
   optimizeDeps: {
+    include: ['ethers'],
     exclude: ["@zama-fhe/relayer-sdk", "@zama-fhe/relayer-sdk/bundle", "@zama-fhe/relayer-sdk/web"],
     esbuildOptions: {
       target: "esnext",
