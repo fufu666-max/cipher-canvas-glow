@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npx hardhat compile && npx hardhat typechain && (cd ui && npm ci && npm run build)",
+  "buildCommand": "npm run compile && npm run typechain && (cd ui && npm ci && npm run build)",
   "outputDirectory": "ui/dist",
   "installCommand": "npm ci",
   "framework": null,
