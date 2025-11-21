@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "npm run compile && npm run typechain && (cd ui && npm ci && npm run build)",
+  "buildCommand": "cd ui && npm ci && npm run build",
   "outputDirectory": "ui/dist",
-  "installCommand": "npm ci",
+  "installCommand": "npm ci --prefix ui",
   "framework": null,
   "rewrites": [
     {
