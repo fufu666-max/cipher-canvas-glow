@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm ci && npm run compile && cd ui && npm ci && npm run build",
+  "buildCommand": "npm run compile && cd ui && npm ci && npm run build",
   "outputDirectory": "ui/dist",
   "installCommand": "npm ci",
   "framework": null,
