@@ -72,13 +72,20 @@ const config: HardhatUserConfig = {
         // https://github.com/paulrberg/hardhat-template/issues/31
         bytecodeHash: "none",
       },
-      // Disable the optimizer when debugging
+      // Advanced optimizer settings for gas efficiency
       // https://hardhat.org/hardhat-network/#solidity-optimizer-support
       optimizer: {
         enabled: true,
-        runs: 800,
+        runs: 1000, // Optimized for production deployment
+        details: {
+          yul: true,
+          yulDetails: {
+            stackAllocation: true,
+          },
+        },
       },
       evmVersion: "cancun",
+      viaIR: false, // Use legacy pipeline for FHEVM compatibility
     },
   },
   typechain: {
