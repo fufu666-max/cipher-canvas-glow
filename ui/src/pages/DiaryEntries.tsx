@@ -3,9 +3,7 @@ import { useAccount, useChainId, useWalletClient, usePublicClient } from 'wagmi'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { BookOpen, Lock, Unlock, Eye, EyeOff, AlertCircle, RefreshCw } from 'lucide-react';
+import { BookOpen, Lock, Unlock, Eye, EyeOff } from 'lucide-react';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { getEncryptedDiaryContract } from '@/lib/contract';
@@ -32,8 +30,6 @@ const DiaryEntries = () => {
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [decrypting, setDecrypting] = useState<Set<number>>(new Set());
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (isConnected && address) {
@@ -41,12 +37,7 @@ const DiaryEntries = () => {
     }
   }, [isConnected, address, chainId]);
 
-  const loadEntries = async (isRetry = false) => {
-    if (!isRetry) {
-      setLoading(true);
-      setError(null);
-    }
-
+  const loadEntries = async () => {
     try {
       if (!publicClient) {
         throw new Error('Public client not available');
@@ -78,36 +69,15 @@ const DiaryEntries = () => {
       }
 
       setEntries(entriesData.reverse()); // Show newest first
-      setError(null); // Clear any previous errors
-      setRetryCount(0); // Reset retry count on success
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to load entries:', error);
-      const errorMessage = error.message || 'Unknown error occurred';
-      setError(errorMessage);
-
-      if (retryCount < 3) {
-        toast({
-          title: "Failed to load entries",
-          description: `Retrying... (${retryCount + 1}/3)`,
-          variant: "destructive",
-        });
-
-        // Auto-retry after 2 seconds
-        setTimeout(() => {
-          setRetryCount(prev => prev + 1);
-          loadEntries(true);
-        }, 2000);
-      } else {
-        toast({
-          title: "Failed to load entries",
-          description: "Please check your connection and try again.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Failed to load entries",
+        description: "There was an error loading your diary entries.",
+        variant: "destructive",
+      });
     } finally {
-      if (!isRetry) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   };
 
@@ -223,41 +193,9 @@ const DiaryEntries = () => {
           </p>
         </div>
 
-        {error ? (
-          <Alert className="mb-6 border-red-200 bg-red-50">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">
-              <div className="flex items-center justify-between">
-                <span>Failed to load diary entries: {error}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => loadEntries()}
-                  disabled={loading}
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Retry
-                </Button>
-              </div>
-            </AlertDescription>
-          </Alert>
-        ) : loading ? (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <Card key={i}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-6 w-32" />
-                    <Skeleton className="h-6 w-20" />
-                  </div>
-                  <Skeleton className="h-4 w-48" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-3/4" />
-                </CardContent>
-              </Card>
-            ))}
+        {loading ? (
+          <div className="text-center py-8">
+            <p>Loading your diary entries...</p>
           </div>
         ) : entries.length === 0 ? (
           <Card>

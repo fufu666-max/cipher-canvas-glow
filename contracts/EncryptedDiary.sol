@@ -5,28 +5,15 @@ import {FHE, euint32, euint256, externalEuint32, externalEuint256} from "@fhevm/
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title Encrypted Diary Contract
-/// @author Cipher Canvas Glow Team
-/// @notice A privacy-preserving diary application using Fully Homomorphic Encryption (FHEVM)
-/// @dev This contract enables users to create encrypted diary entries with time-based unlock mechanisms
-/// Security features:
-/// - Client-side encryption using FHEVM
-/// - Author-only access control for encrypted content
-/// - Time-based entry unlocking
-/// - Comprehensive input validation
-/// @custom:security-contact security@ciphercanvasglow.com
+/// @author Cipher Canvas Glow
+/// @notice A privacy-preserving diary application using FHEVM for encrypted entries
 contract EncryptedDiary is SepoliaConfig {
-    /// @dev Structure representing a single diary entry
-    /// @param author The Ethereum address of the entry creator
-    /// @param encryptedContent FHE-encrypted content using euint256
-    /// @param unlockTimestamp Unix timestamp when entry unlocks (0 = never unlocks)
-    /// @param createdAt Unix timestamp when entry was created
-    /// @param isPublic Whether entry becomes publicly readable after unlock
     struct DiaryEntry {
         address author;
-        euint256 encryptedContent;  // FHE-encrypted diary content
+        euint256 encryptedContent;  // Encrypted diary content
         uint256 unlockTimestamp;    // When the entry can be unlocked (0 = never)
         uint256 createdAt;
-        bool isPublic;             // Whether entry is publicly readable after unlock
+        bool isPublic;             // Whether the entry is publicly readable after unlock
     }
 
     DiaryEntry[] private _entries;
@@ -46,18 +33,6 @@ contract EncryptedDiary is SepoliaConfig {
         uint256 unlockTimestamp,
         bool isPublic
     ) external returns (uint256) {
-        // Enhanced input validation for better security
-        require(inputProof.length > 0, "Input proof cannot be empty");
-        require(inputProof.length <= 4096, "Input proof too large");
-
-        // Validate unlock timestamp (must be in future or 0 for never unlock)
-        require(unlockTimestamp == 0 || unlockTimestamp > block.timestamp,
-                "Unlock timestamp must be in the future or 0 for never unlock");
-
-        // Limit reasonable future unlock time (max 10 years)
-        require(unlockTimestamp == 0 || unlockTimestamp <= block.timestamp + 3650 days,
-                "Unlock timestamp cannot be more than 10 years in the future");
-
         euint256 content = FHE.fromExternal(encryptedContent, inputProof);
 
         uint256 entryId = _entries.length;
